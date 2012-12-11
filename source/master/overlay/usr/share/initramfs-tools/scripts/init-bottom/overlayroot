@@ -45,7 +45,7 @@ VARIABLES="overlayroot overlayroot_cfgdisk"
 root_rw=/media/root-rw
 root_ro=/media/root-ro
 ROOTMNT=${rootmnt} # use global name to indicate created outside this
-OVERLAYROOT_DEBUG=1
+OVERLAYROOT_DEBUG=0
 
 log() {
 	"log_${1}_msg" "$MYTAG: $2";
