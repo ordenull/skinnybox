@@ -1,0 +1,35 @@
+#!/bin/bash
+XENSTOREREAD=`which xenstore-read`
+
+[ -x $XENSTOREREAD ] || exit 0
+
+IP=`$XENSTOREREAD vm-data/ip`
+GW=`$XENSTOREREAD vm-data/gw`
+NM=`$XENSTOREREAD vm-data/nm`
+NS=`$XENSTOREREAD vm-data/ns`
+DM=`$XENSTOREREAD vm-data/dm`
+
+[ "$IP" = "" ] && exit 0
+[ "$GW" = "" ] && exit 0
+[ "$NM" = "" ] && exit 0
+[ "$NS" = "" ] && exit 0
+
+cat << EOF > /etc/network/interfaces
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+        address $IP
+        netmask $NM
+        gateway $GW
+        dns-nameservers $NS
+EOF
+
+if [ ! "$DM" = "" ]; then
+  echo "        dns-search $DM" >> /etc/network/interfaces
+fi
+
+/etc/init.d/networking restart
+
+exit 0

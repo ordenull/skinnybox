@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+
+"""
+
+Example usage:
+
+HOST_UUID=`xe host-list | awk -F': ' '{print $2}' | head -n 1`
+
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=provision \
+   args:template=ubuntu-overlay-template \
+   args:master=thin-overlay-00 \
+   args:name=overlay-01
+
+"""
+
+import XenAPI
+
+import XenAPIPlugin
+
+def get_default_sr(session):
+    """Returns the reference to the default SR"""
+    pool = session.xenapi.pool.get_all()[0]
+    default_sr = session.xenapi.pool.get_default_SR(pool)
+    return default_sr
+
+
+def get_source_template(session, name):
+    """Verifies that the template is suitable for use in this plugin and returns its reference"""
+    templates = session.xenapi.VM.get_by_name_label(name)
+
+    if len(templates) == 0:
+        raise "Template '%s' not found" % (name)
+        
+    if len(templates) > 1:
+        raise "Multiple templates found by that name '%s'" % (name)
+        
+    template_rec = session.xenapi.VM.get_record(templates[0])
+    
+    if not template_rec["is_a_template"]:
+        raise "'%s' is not a template" % (name)
+
+    vbds = template_rec["VBDs"]
+    
+    for vbd in vbds:
+        record = session.xenapi.VBD.get_record(vbd)
+        
+        if (record["userdevice"] == "0"):
+            raise "Template '%s' must have an empty storage slot 0" % (name)
+
+    # Return the template reference
+    return templates[0]    
+        
+def get_master_boot_vbd(session, master):
+    """Locates the master VM, verifies it's suitability and returns it's boot drive"""
+    vm_refs = session.xenapi.VM.get_by_name_label(master)
+    
+    if len(vm_refs) == 0:
+        raise "VM '%s' not found" % (master)
+        
+    if len(vm_refs) > 1:
+        raise "Multiple VMs found by that name '%s'" % (master)
+        
+    vm_rec = session.xenapi.VM.get_record(vm_refs[0])
+    
+    if vm_rec["is_a_template"]:
+        raise "'%s' is a template, should be a VM" % (master)
+    
+    vbds = vm_rec["VBDs"]
+    
+    for vbd in vbds:
+        record = session.xenapi.VBD.get_record(vbd)
+        if record["bootable"]:
+            return vbd, record
+    
+    raise "Couldn't determine the bootable drive of %s" % (master)
+    
+    
+def fix_boot_disk(session, vm):
+    """Ensures that only the disk in slot 0 is marked as bootable"""
+    
+    vm_record = session.xenapi.VM.get_record(vm)
+    vbds = vm_record["VBDs"]
+    
+    for vbd in vbds:
+        record = session.xenapi.VBD.get_record(vbd)
+        if (record["userdevice"] == "0") & (record["bootable"] == False):
+            session.xenapi.VBD.set_bootable(vbd, True)
+            
+        if (record["userdevice"] != "0") & (record["bootable"] == True):
+            session.xenapi.VBD.set_bootable(vbd, False)
+ 
+def fix_vbi_names(session, vm):
+    """Renames the VDBs to avoid confusion with the templates VBD"""
+    
+    vm_record = session.xenapi.VM.get_record(vm)
+    vbds = vm_record["VBDs"]
+    
+    for vbd in vbds:
+        record = session.xenapi.VBD.get_record(vbd)
+        if (record["empty"] == False) & (record["type"] == "Disk"):
+            vdi = record["VDI"]
+            session.xenapi.VDI.set_name_label(vdi, vm_record["name_label"])   
+    
+def create_thin_vm(session, template, master, name):
+    """Provision a new thin VM.
+    
+Parameters:
+  template = name of the template to clone
+  master = name of the VM from which to steal the boot drive
+  name = the name to assign to the new VM and it's disks
+  
+Requirements:
+* The template name passed must not have a boot drive attached. 
+  Typically only a small ext2 drive in slot 1 is needed.
+* The master vm must have a boot drive attached. This drive will 
+  get attached to the new VM in slot 0 as a read only drive"""
+
+    template = get_source_template(session, template)
+    vm = session.xenapi.VM.clone(template, name)
+    session.xenapi.VM.provision(vm)
+
+    vm_uuid = session.xenapi.VM.get_record(vm)["uuid"]
+
+    # Rename the VDIs that have been cloned
+    fix_vbi_names(session, vm)
+
+    # Assign the read only boot drive to the new VM using the master's VDI
+    master_vbd, master_vbd_rec = get_master_boot_vbd(session, master)
+    boot_vbd = {
+        "VM": vm,
+        "VDI": master_vbd_rec["VDI"],
+        "userdevice": "0",
+        "mode": "RO",
+        "type": master_vbd_rec["type"],
+        "bootable": True,
+        "unpluggable": master_vbd_rec["unpluggable"],
+        "empty": master_vbd_rec["empty"],
+        "other_config": master_vbd_rec["other_config"],
+        "qos_algorithm_type": master_vbd_rec["qos_algorithm_type"],
+        "qos_algorithm_params": master_vbd_rec["qos_algorithm_params"]
+    }
+    session.xenapi.VBD.create(boot_vbd)
+    
+    # Fix the boot configuration
+    fix_boot_disk(session, vm)
+
+    return vm_uuid
+    
+
+def provision(session, args):
+
+    if not args.has_key("template"):
+        raise "Need the name of the template to clone. Please use the 'template' argument"
+    template = args["template"]
+    
+    if not args.has_key("master"):
+        raise "Need the name of the vm from which to borrow a boot drive. Please use the 'master' argument"
+    master = args["master"]
+    
+    if not args.has_key("name"):
+        raise "Need the name to assign to the new VM. Please use the 'name' argument"
+    name = args["name"]
+    
+    #sr = get_default_sr(session)
+    return create_thin_vm(session, template, master, name)
+
+
+if __name__ == "__main__":
+    XenAPIPlugin.dispatch({"provision": provision})

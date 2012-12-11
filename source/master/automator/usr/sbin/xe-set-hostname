@@ -1,0 +1,27 @@
+#!/bin/bash
+
+XENSTOREREAD=`which xenstore-read`
+if [ -e $XENSTOREREAD ]; then
+
+  # Extract the name of the server set in XenCenter
+  DOMAIN=`$XENSTOREREAD read domid`
+  NAME=`$XENSTOREREAD /local/domain/${DOMAIN}/name`
+
+  # We're going to keep the same domain that's in the template
+  DOMAIN=`hostname -d`
+
+  [ "$NAME" = "" ] && exit 0
+
+  echo "${NAME}" > /etc/hostname
+  /bin/hostname -F /etc/hostname
+
+  # Update the hosts file with the FQDN if the domain name was set in the template
+  if [ "$DOMAIN" = "" ]; then
+    sed -i "s/127.0.1.1\s\+.\+/127.0.1.1\t${NAME}/g" /etc/hosts
+  else
+    sed -i "s/127.0.1.1\s\+.\+/127.0.1.1\t${NAME}.${DOMAIN}\t${NAME}/g" /etc/hosts
+  fi
+
+fi
+exit 0
+

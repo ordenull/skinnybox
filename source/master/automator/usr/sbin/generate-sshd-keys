@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if (dpkg-query -W openssh-server > /dev/null); then
+  [ ! -f /etc/ssh/ssh_host_rsa_key ] && dpkg-reconfigure openssh-server
+fi

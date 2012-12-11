@@ -1,0 +1,11 @@
+Package: sb-automator
+Source: xenserver-skinnybox
+Version: 0.2-ubuntu1
+Section: admin
+Architecture: all
+Maintainer: Stan Borbat <ordenull@gmail.com>
+Priority: extra
+Homepage: http://stan.borbat.com/skinnybox
+Description: A collection of packages customized to allow provisioning
+ of skinny/thin servers with XenServer (XCP). This package was origionally
+ forked from https://github.com/krobertson/xenserver-automater

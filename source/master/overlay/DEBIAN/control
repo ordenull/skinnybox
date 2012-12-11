@@ -1,0 +1,19 @@
+Package: sb-overlay
+Source: cloud-initramfs-tools
+Version: 0.19-ubuntu1
+Architecture: all
+Maintainer: Scott Moser <smoser@ubuntu.com>
+Installed-Size: 91
+Depends: cryptsetup, cryptsetup-bin, initramfs-tools
+Suggests: haveged
+Section: admin
+Priority: extra
+Homepage: http://launchpad.net/cloud-initramfs-tools
+Description: use an overlayfs on top of a read-only root filesystem
+ This package adds functionality to an initramfs built by initramfs-tools.
+ When installed and configured, the initramfs will mount an overlayfs
+ filesystem on top of a read-only root volume.
+ .
+ The changes can be written to a in-memory temporary filesystem, a
+ filesystem on an existing block device, or a dmcrypt encrypted block
+ device.
