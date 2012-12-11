@@ -165,5 +165,99 @@ def provision(session, args):
     return create_thin_vm(session, template, master, name)
 
 
+def create_template(session, args):
+
+    if args.has_key("template_to_clone"):
+        template_to_clone = args["template_to_clone"]
+    else:
+        template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)"
+
+
+    if args.has_key("new_template_name"):
+        new_template_name = args["new_template_name"]
+    else:
+        new_template_name="Ubuntu 12.04 Skinny (64MB)"
+
+
+    if args.has_key("overlay_size"):
+        overlay_size = args["overlay_size"]
+    else:
+        overlay_size=67108864
+
+    templates = session.xenapi.VM.get_by_name_label(template_to_clone)
+    
+    if len(templates) == 0:
+        raise "Template '%s' not found" % (template_to_clone)
+        
+    if len(templates) > 1:
+        raise "Multiple templates found by that name '%s'" % (template_to_clone)
+        
+    stock_ubuntu_template = templates[0]
+    stock_ubuntu_template_rec = session.xenapi.VM.get_record(stock_ubuntu_template)
+
+    #Create the overlay template
+    my_overlay_template = session.xenapi.VM.clone(stock_ubuntu_template, new_template_name)
+    my_overlay_template_rec = session.xenapi.VM.get_record(my_overlay_template)
+    
+    other_config = my_overlay_template_rec["other_config"]
+    other_config["instant"] = "true"
+    other_config["skinnybox"] = "true"
+    del(other_config["install-distro"])
+    del(other_config["disks"])
+    
+    session.xenapi.VM.set_other_config(my_overlay_template, other_config)
+    session.xenapi.VM.set_PV_bootloader(my_overlay_template, "pygrub")
+    session.xenapi.VM.set_PV_args(my_overlay_template, "-- console=hvc0 overlayroot=device:dev=/dev/xvdb,mkfs=1")
+    session.xenapi.VM.set_name_description(my_overlay_template, "Template that's used for skinny provisioning of Ubuntu server VMs. Before installing this template please assign to it a network interface, customize the memory and CPU alocation to fit your need and increase the size of the overlay drive. To actually install, use the SkinnyBox XenCenter plugin or the CLI XenServer plugin. The overlay drive will be formatted automatically on the first boot.")
+
+    #Add a DVD drive in the last slot
+    dvd_drive_vbd = {
+        "VM": my_overlay_template,
+        "VDI": "",
+        "userdevice": "15",
+        "mode": "RO",
+        "type": "CD",
+        "bootable": False,
+        "unpluggable": True,
+        "empty": True,
+        "other_config": {},
+        "qos_algorithm_type": "",
+        "qos_algorithm_params": {}
+    }
+    session.xenapi.VBD.create(dvd_drive_vbd)
+    
+    #Create a very small overlay VDI in slot 2 of the overlay template
+    default_sr = get_default_sr(session)
+    overlay_drive_vdi = {
+        "SR": default_sr,
+        "virtual_size": "%d" % overlay_size,
+        "type": "user",
+        "sharable": False,
+        "read_only": False,
+        "other_config": {},
+        "name_label": "Overlay disk",
+        "name_description": "Disk formatted with ext2 and mounted as an overlay on top of an existing root filesystem",
+    }
+    overlay_vdi = session.xenapi.VDI.create(overlay_drive_vdi)
+
+    #Attach the VDI to the overlay template
+    overlay_drive_vbd = {
+        "VM": my_overlay_template,
+        "VDI": overlay_vdi,
+        "userdevice": "1",
+        "mode": "RW",
+        "type": "Disk",
+        "bootable": False,
+        "unpluggable": True,
+        "empty": False,
+        "other_config": {},
+        "qos_algorithm_type": "",
+        "qos_algorithm_params": {}
+    }
+    session.xenapi.VBD.create(overlay_drive_vbd)
+    return my_overlay_template_rec["uuid"]
+
+
 if __name__ == "__main__":
-    XenAPIPlugin.dispatch({"provision": provision})
+    XenAPIPlugin.dispatch({"provision": provision,
+                           "create_template": create_template})
