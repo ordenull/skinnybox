@@ -4,7 +4,7 @@ XENSTOREREAD=`which xenstore-read`
 if [ -e $XENSTOREREAD ]; then
 
   # Extract the name of the server set in XenCenter
-  DOMAIN=`$XENSTOREREAD read domid`
+  DOMAIN=`$XENSTOREREAD domid`
   NAME=`$XENSTOREREAD /local/domain/${DOMAIN}/name`
 
   # We're going to keep the same domain that's in the template
