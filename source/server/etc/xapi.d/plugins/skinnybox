@@ -232,7 +232,7 @@ def create_template(session, args):
     
     session.xenapi.VM.set_other_config(my_overlay_template, other_config)
     session.xenapi.VM.set_PV_bootloader(my_overlay_template, "pygrub")
-    session.xenapi.VM.set_PV_args(my_overlay_template, "-- console=hvc0 overlayroot=device:dev=/dev/xvdb,mkfs=1")
+    session.xenapi.VM.set_PV_args(my_overlay_template, "-- quiet console=hvc0 overlayroot=device:dev=/dev/xvdb,mkfs=1")
     session.xenapi.VM.set_name_description(my_overlay_template, "Template that's used for skinny provisioning of Ubuntu server VMs. Before installing this template please assign to it a network interface, customize the memory and CPU alocation to fit your need and increase the size of the overlay drive. To actually install, use the SkinnyBox XenCenter plugin or the CLI XenServer plugin. The overlay drive will be formatted automatically on the first boot.")
 
     #Add a DVD drive in the last slot
