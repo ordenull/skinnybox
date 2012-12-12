@@ -272,7 +272,16 @@ dev_setup() {
 	# If mkfs=1 and only one character is not a zero (newline)
 	if [ "$mkfs" = "1" ] && [ "$dev_header_nz_count" -le "1" ]; then
 		log_warn "$dev: first $dev_header_length bytes are NULLs, making a new filesystem";
-		mke2fs -t "${fstype}" "$dev" || {
+		mke2fs -t "${fstype}" "$dev" > /dev/null || {
+			log_fail "failed to mkfs -t $fstype on device $dev";
+			return 1;
+		}
+	fi
+
+	# If mkfs=2
+	if [ "$mkfs" = "2" ]; then
+		log_warn "$dev: mkfs=2, making a new filesystem";
+		mke2fs -t "${fstype}" "$dev" > /dev/null || {
 			log_fail "failed to mkfs -t $fstype on device $dev";
 			return 1;
 		}
