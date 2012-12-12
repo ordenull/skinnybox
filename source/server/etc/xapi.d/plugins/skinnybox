@@ -6,15 +6,40 @@ Example usage:
 
 HOST_UUID=`xe host-list | awk -F': ' '{print $2}' | head -n 1`
 
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=create_template \
+   args:template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)" \
+   args:new_template_name="Ubuntu 12.04 Skinny (64MB)" \
+   args:overlay_size=67108864
+
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=create_template \
+   args:template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)" \
+   args:new_template_name="Ubuntu 12.04 Skinny (126MB)" \
+   args:overlay_size=134217728
+
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=create_template \
+   args:template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)" \
+   args:new_template_name="Ubuntu 12.04 Skinny (256MB)" \
+   args:overlay_size=268435456
+
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=create_template \
+   args:template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)" \
+   args:new_template_name="Ubuntu 12.04 Skinny (512MB)" \
+   args:overlay_size=536870912
+
+xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=create_template \
+   args:template_to_clone="Ubuntu Precise Pangolin 12.04 (64-bit)" \
+   args:new_template_name="Ubuntu 12.04 Skinny (1024MB)" \
+   args:overlay_size=1073741824
+
 xe host-call-plugin host-uuid=${HOST_UUID} plugin=skinnybox fn=provision \
-   args:template=ubuntu-overlay-template \
-   args:master=thin-overlay-00 \
-   args:name=overlay-01
+   args:template="Ubuntu 12.04 Skinny (256MB)" \
+   args:master=skinny-00 \
+   args:name=skinny-01
+
 
 """
 
 import XenAPI
-
 import XenAPIPlugin
 
 def get_default_sr(session):
@@ -180,7 +205,7 @@ def create_template(session, args):
 
 
     if args.has_key("overlay_size"):
-        overlay_size = args["overlay_size"]
+        overlay_size = int(args["overlay_size"])
     else:
         overlay_size=67108864
 
