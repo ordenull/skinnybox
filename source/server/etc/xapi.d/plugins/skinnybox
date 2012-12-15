@@ -283,7 +283,7 @@ def create_template(session, args):
     return my_overlay_template_rec["uuid"]
 
 
-def create_template(session, args):
+def version(session, args):
    return "1.0.0";
 
 
