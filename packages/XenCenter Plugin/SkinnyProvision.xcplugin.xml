@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE XenCenterPlugin PUBLIC "-//XENCENTERPLUGIN//DTD XENCENTERPLUGIN1//EN" "xencenter-1.dtd">
+<XenCenterPlugin xmlns="http://www.citrix.com/XenCenter/Plugins/schema" version="1">
+
+  <GroupMenuItem name="SkinnyBox" menu="server">
+    
+    <MenuItem name="Create Template" menu="server" serialized="global">
+      <Shell filename="Plugins\Ordenull\SkinnyProvision\SkinnyProvision.exe" 
+             window="true" required_method_list="create_provision" param="create-template"/>
+    </MenuItem>
+    
+    <MenuItem name="Create VM" menu="server" serialized="global">
+      <Shell filename="Plugins\Ordenull\SkinnyProvision\SkinnyProvision.exe" 
+             window="true" required_method_list="create_provision" param="create-single"/>
+    </MenuItem>
+
+    <MenuItem name="Batch Create VMs" menu="server" serialized="global">
+      <Shell filename="Plugins\Ordenull\SkinnyProvision\SkinnyProvision.exe" 
+             window="true" required_method_list="create_provision" param="create-batch"/>
+    </MenuItem>
+    
+  </GroupMenuItem>
+  
+  <MethodList name="create_provision">host.reboot, vm.start</MethodList>
+  
+</XenCenterPlugin>
