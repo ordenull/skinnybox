@@ -226,7 +226,7 @@ def create_template(session, args):
     
     other_config = my_overlay_template_rec["other_config"]
     other_config["instant"] = "true"
-    other_config["skinnybox"] = "true"
+    other_config["skinnybox"] = "template"
     del(other_config["install-distro"])
     del(other_config["disks"])
     
