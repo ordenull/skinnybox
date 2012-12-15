@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{83EAC000-F729-475D-AC1D-90DC0791DE8E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>XenAPI</RootNamespace>
+    <AssemblyName>XenServer</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CookComputing.XmlRpcV2, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\CookComputing.XmlRpcV2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Auth.cs" />
+    <Compile Include="Blob.cs" />
+    <Compile Include="Bond.cs" />
+    <Compile Include="Console.cs" />
+    <Compile Include="Crashdump.cs" />
+    <Compile Include="DR_task.cs" />
+    <Compile Include="Data_source.cs" />
+    <Compile Include="GPU_group.cs" />
+    <Compile Include="HTTP_actions.cs" />
+    <Compile Include="Host.cs" />
+    <Compile Include="Host_cpu.cs" />
+    <Compile Include="Host_crashdump.cs" />
+    <Compile Include="Host_metrics.cs" />
+    <Compile Include="Host_patch.cs" />
+    <Compile Include="Maps.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Network.cs" />
+    <Compile Include="PBD.cs" />
+    <Compile Include="PCI.cs" />
+    <Compile Include="PGPU.cs" />
+    <Compile Include="PIF.cs" />
+    <Compile Include="PIF_metrics.cs" />
+    <Compile Include="Pool.cs" />
+    <Compile Include="Pool_patch.cs" />
+    <Compile Include="Proxy.cs" />
+    <Compile Include="Relation.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="SM.cs" />
+    <Compile Include="SR.cs" />
+    <Compile Include="Secret.cs" />
+    <Compile Include="Subject.cs" />
+    <Compile Include="Task.cs" />
+    <Compile Include="Tunnel.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="VBD.cs" />
+    <Compile Include="VBD_metrics.cs" />
+    <Compile Include="VDI.cs" />
+    <Compile Include="VGPU.cs" />
+    <Compile Include="VIF.cs" />
+    <Compile Include="VIF_metrics.cs" />
+    <Compile Include="VLAN.cs" />
+    <Compile Include="VM.cs" />
+    <Compile Include="VMPP.cs" />
+    <Compile Include="VM_appliance.cs" />
+    <Compile Include="VM_guest_metrics.cs" />
+    <Compile Include="VM_metrics.cs" />
+    <Compile Include="VTPM.cs" />
+    <Compile Include="after_apply_guidance.cs" />
+    <Compile Include="bond_mode.cs" />
+    <Compile Include="cls.cs" />
+    <Compile Include="console_protocol.cs" />
+    <Compile Include="host_allowed_operations.cs" />
+    <Compile Include="ip_configuration_mode.cs" />
+    <Compile Include="ipv6_configuration_mode.cs" />
+    <Compile Include="network_default_locking_mode.cs" />
+    <Compile Include="network_operations.cs" />
+    <Compile Include="on_boot.cs" />
+    <Compile Include="on_crash_behaviour.cs" />
+    <Compile Include="on_normal_exit.cs" />
+    <Compile Include="primary_address_type.cs" />
+    <Compile Include="storage_operations.cs" />
+    <Compile Include="task_allowed_operations.cs" />
+    <Compile Include="task_status_type.cs" />
+    <Compile Include="vbd_mode.cs" />
+    <Compile Include="vbd_operations.cs" />
+    <Compile Include="vbd_type.cs" />
+    <Compile Include="vdi_operations.cs" />
+    <Compile Include="vdi_type.cs" />
+    <Compile Include="vif_locking_mode.cs" />
+    <Compile Include="vif_operations.cs" />
+    <Compile Include="vm_appliance_operation.cs" />
+    <Compile Include="vm_operations.cs" />
+    <Compile Include="vm_power_state.cs" />
+    <Compile Include="vmpp_archive_frequency.cs" />
+    <Compile Include="vmpp_archive_target_type.cs" />
+    <Compile Include="vmpp_backup_frequency.cs" />
+    <Compile Include="vmpp_backup_type.cs" />
+    <Compile Include="Blob2.cs" />
+    <Compile Include="VM2.cs" />
+    <Compile Include="VDI2.cs" />
+    <Compile Include="SR2.cs" />
+    <Compile Include="Pool2.cs" />
+    <Compile Include="PIF2.cs" />
+    <Compile Include="Network2.cs" />
+    <Compile Include="Host2.cs" />
+    <Compile Include="Bond2.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="EventHelpers.cs" />
+    <Compile Include="Failure.cs" />
+    <Compile Include="FriendlyErrorNames.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FriendlyErrorNames.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="HTTP.cs" />
+    <Compile Include="IMockWebProxy.cs" />
+    <Compile Include="IXenObject.cs" />
+    <Compile Include="Marshalling.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Response.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="Subject2.cs" />
+    <Compile Include="UserDetails.cs" />
+    <Compile Include="XenObject.cs" />
+    <Compile Include="XenRef.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FriendlyErrorNames.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>XenAPI</CustomToolNamespace>
+      <LastGenOutput>FriendlyErrorNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

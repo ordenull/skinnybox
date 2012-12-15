@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0B6D3B01-0D5F-4CED-8EB0-08AB808607F6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SkinnyProvision</RootNamespace>
+    <AssemblyName>SkinnyProvision</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Connecting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Connecting.Designer.cs">
+      <DependentUpon>Connecting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateMultipleVMs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateMultipleVMs.Designer.cs">
+      <DependentUpon>CreateMultipleVMs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateSingleVM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateSingleVM.Designer.cs">
+      <DependentUpon>CreateSingleVM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateTemplate.Designer.cs">
+      <DependentUpon>CreateTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SkinnyProvision.xcplugin.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XenServer API\XenServer.csproj">
+      <Project>{83EAC000-F729-475D-AC1D-90DC0791DE8E}</Project>
+      <Name>XenServer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Connecting.resx">
+      <DependentUpon>Connecting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateMultipleVMs.resx">
+      <DependentUpon>CreateMultipleVMs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateSingleVM.resx">
+      <DependentUpon>CreateSingleVM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateTemplate.resx">
+      <DependentUpon>CreateTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)SkinnyProvision.xcplugin.xml" "$(TargetDir)"
+copy "$(ProjectDir)SkinnyProvision.png" "$(TargetDir)"
+del /Q "C:\Program Files (x86)\Citrix\XenCenter\Plugins\Ordenull\SkinnyProvision\*.*"
+copy "$(TargetDir)*.*" "C:\Program Files (x86)\Citrix\XenCenter\Plugins\Ordenull\SkinnyProvision"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
