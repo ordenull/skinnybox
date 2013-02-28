@@ -82,7 +82,7 @@ namespace SkinnyProvision
                 this.Close();
             }
 
-            if (templates.Count == 0)
+            if (masters.Count == 0)
             {
                 MessageBox.Show("There are no SkinnyBox masters available. Please dedicate a master by setting the other_config field to \"master\"", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
